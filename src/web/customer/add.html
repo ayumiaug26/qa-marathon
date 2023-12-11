@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <!-- Bootstrap CSSの読み込み -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <h2 class="mb-4">顧客情報を入力してください</h2>
@@ -33,7 +35,7 @@
     <script type="module">
         import config from '../config.js';
 
-        document.getElementById('customer-form').addEventListener('submit', function(e) {
+        document.getElementById('customer-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(this);
             fetch(config.apiUrl + '/add-customer', {
@@ -42,17 +44,20 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: new URLSearchParams([...formData])
-            }).then(response => response.json())
-              .then(data => {
-                if(data.success) {
-                    alert('顧客情報が正常に保存されました。');
-                    // フォームをリセット
-                    document.getElementById('customer-form').reset();
-                } else {
-                    alert('保存に失敗しました。');
-                }
-              })
-              .catch(error => console.error('Error:', error));
+            },
+                // console.log([...formData])
+            ).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('顧客情報が正常に保存されました。');
+                        // フォームをリセット
+                        document.getElementById('customer-form').reset();
+                    } else {
+                        alert('保存に失敗しました。');
+                        console.log(data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
@@ -60,4 +65,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>
