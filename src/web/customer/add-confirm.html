@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,94 @@
     <!-- Bootstrap CSSの読み込み -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <!-- ここにHTMLを書く -->
+        <h2 class="mb-4">確認画面</h2>
+        <div>
+            <p>
+                以下の内容で登録します。よろしいですか？
+            </p>
+        </div>
+        <form id="customer-form">
+            <div class="form-group">
+                <label for="show-companyName">会社名:</label>
+                <p id="show-companyName" name="show-companyName"></p>
+                <input type="hidden" id="companyName" name="companyName">
+            </div>
+            <div class="form-group">
+                <label for="show-industry">業種:</label>
+                <p id="show-industry" name="show-industry"></p>
+                <input type="hidden" name="industry" id="industry">
+            </div>
+            <div class="form-group">
+                <label for="show-contact">連絡先:</label>
+                <p id="show-contact" name="show-contact"></p>
+                <input type="hidden" name="contact" id="contact">
+            </div>
+            <div class="form-group">
+                <label for="show-location">所在地:</label>
+                <p id="show-location" name="show-location"></p>
+                <input type="hidden" name="location" id="location">
+            </div>
+            <button type="submit" class="btn btn-primary">確定</button>
+        </form>
     </div>
     <script type="module">
-        <!-- ここにJSを書く -->
+        const storage = sessionStorage;
+
+        document.getElementById("show-companyName").textContent = storage.getItem("companyName");
+        document.getElementById("show-industry").textContent = storage.getItem("industry");
+        document.getElementById("show-contact").textContent = storage.getItem("contact");
+        document.getElementById("show-location").textContent = storage.getItem("location");
+
+        document.getElementById('companyName').velue = storage.getItem('companyName');
+        document.getElementById('industry').value = storage.getItem('industry');
+        document.getElementById('contact').value = storage.getItem('contact');
+        document.getElementById('location').value = storage.getItem('location');
+
+        import config from '../config.js';
+
+        document.getElementById('customer-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch(config.apiUrl + '/add-customer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams([...formData])
+            },
+                // console.log([...formData])
+            ).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('顧客情報が正常に保存されました。');
+                        // フォームをリセット
+                        document.getElementById('customer-form').reset();
+                        // セッションストレージをリセット
+                        storage.removeItem('companyName');
+                        storage.removeItem('industry');
+                        storage.removeItem('contact');
+                        storage.removeItem('location');
+
+                        window.location.assign('/customer/list.html');
+                    } else {
+                        alert('保存に失敗しました。');
+                        console.log(data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

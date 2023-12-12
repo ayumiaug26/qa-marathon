@@ -29,35 +29,25 @@
                 <label for="location">所在地:</label>
                 <input type="text" class="form-control" id="location" name="location" required>
             </div>
-            <button type="submit" class="btn btn-primary">送信</button>
+            <button type="submit" id="button" class="btn btn-primary">送信</button>
         </form>
     </div>
     <script type="module">
         import config from '../config.js';
+        // const form = document.getElementById("customer-form")
 
         document.getElementById('customer-form').addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(this);
-            fetch(config.apiUrl + '/add-customer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams([...formData])
-            },
-                // console.log([...formData])
-            ).then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('顧客情報が正常に保存されました。');
-                        // フォームをリセット
-                        document.getElementById('customer-form').reset();
-                    } else {
-                        alert('保存に失敗しました。');
-                        console.log(data);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+
+            let storage = sessionStorage;
+            storage.setItem('companyName', formData.get('companyName'));
+            storage.setItem('industry', formData.get('industry'));
+            storage.setItem('contact', formData.get('contact'));
+            storage.setItem('location', formData.get('location'));
+
+            window.location.assign('/customer/add-confirm.html');
+
         });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
