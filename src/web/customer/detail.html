@@ -27,12 +27,26 @@
                 <p id="updated_date"></p>
             </ul>
         </div>
+        <div>
+            <form id="delete-form">
+                <input type="hidden" id="delete_id" name="id">
+                <button id="delete" type="submit">削除</button>
+            </form>
+        </div>
+        <div>
+            <form id="update-form">
+                <input type="hidden">
+                <button id="update" name="update" type="submit">更新</button>
+            </form>
+        </div>
     </div>
 </body>
 <script type="module">
     import config from "../config.js";
 
     const param = new URLSearchParams(window.location.search);
+    let customerId;
+
     fetch(`${config.apiUrl}/customer/:?${param.toString()}`)
         .then(res => res.json())
         .then(data => {
@@ -40,6 +54,8 @@
             console.log(data); //データが取得できているか確認
 
             document.getElementById('customerId').textContent = data[0].customer_id;
+            customerId = data[0].customer_id;
+            document.getElementById('delete_id').value = customerId;
             document.getElementById('companyName').textContent = data[0].company_name;
             document.getElementById('industry').textContent = data[0].industry;
             document.getElementById('contact').textContent = data[0].contact;
@@ -48,6 +64,36 @@
             document.getElementById('updated_date').textContent = data[0].updated_date;
 
         }).catch((error) => console.error(error));
+
+    document.getElementById('delete-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        let result = confirm('この顧客を削除します。よろしいですか？');
+        if (result) {
+            fetch(`${config.apiUrl}/customer/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams([...formData])
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('顧客情報を1件削除しました。');
+                        window.location.assign('/customer/list.html');
+                    } else {
+                        alert('処理に失敗しました。');
+                    }
+                })
+                .catch(error => console.error(error));
+
+        } else {
+            alert('キャンセルしました');
+        }
+
+    })
 
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

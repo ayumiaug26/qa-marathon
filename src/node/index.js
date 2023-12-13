@@ -60,4 +60,15 @@ app.get("/customer/:id", async (req, res) => {
   }
 })
 
+app.post("/customer/delete", async (req, res) => {
+  try {
+    const id = req.body.id;
+    await pool.query("DELETE FROM customers WHERE customer_id = $1", [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false });
+  }
+})
+
 app.use(express.static("public"));
