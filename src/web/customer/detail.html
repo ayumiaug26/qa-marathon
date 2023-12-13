@@ -34,10 +34,10 @@
             </form>
         </div>
         <div>
-            <form id="update-form">
-                <input type="hidden">
-                <button id="update" name="update" type="submit">更新</button>
-            </form>
+            <!-- <form id="update-form"> -->
+            <!-- <input type="hidden"> -->
+            <button id="update" name="update" type="button">更新</button>
+            <!-- </form> -->
         </div>
     </div>
 </body>
@@ -46,6 +46,7 @@
 
     const param = new URLSearchParams(window.location.search);
     let customerId;
+    let companyName;
 
     fetch(`${config.apiUrl}/customer/:?${param.toString()}`)
         .then(res => res.json())
@@ -92,6 +93,13 @@
         } else {
             alert('キャンセルしました');
         }
+
+    })
+
+    document.getElementById('update').addEventListener('click', function (e) {
+
+        const url = 'http://localhost/customer/update.html'
+        window.location.assign(url + '?id=' + customerId);
 
     })
 

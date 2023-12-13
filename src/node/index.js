@@ -71,4 +71,18 @@ app.post("/customer/delete", async (req, res) => {
   }
 })
 
+app.post("/customer/update", async (req, res) => {
+  try {
+    const { id, companyName, industry, contact, location } = req.body;
+    const customer = await pool.query(
+      "UPDATE customers SET company_name = $2, industry = $3, contact = $4, location = $5 WHERE customer_id = $1 RETURNING *",
+      [id, companyName, industry, contact, location]
+    );
+    res.json({ success: true, customer: customer.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.send(err);
+  }
+})
+
 app.use(express.static("public"));
