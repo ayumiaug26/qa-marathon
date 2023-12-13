@@ -50,11 +50,12 @@
         document.getElementById("show-contact").textContent = storage.getItem("contact");
         document.getElementById("show-location").textContent = storage.getItem("location");
 
-        document.getElementById('companyName').velue = storage.getItem('companyName');
+        document.getElementById('companyName').value = storage.getItem("companyName");
         document.getElementById('industry').value = storage.getItem('industry');
         document.getElementById('contact').value = storage.getItem('contact');
         document.getElementById('location').value = storage.getItem('location');
 
+        // console.log(document.getElementById('companyName'));
         import config from '../config.js';
 
         document.getElementById('customer-form').addEventListener('submit', function (e) {
