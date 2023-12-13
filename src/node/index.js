@@ -48,4 +48,16 @@ app.post("/add-customer", async (req, res) => {
   }
 });
 
+app.get("/customer/:id", async (req, res) => {
+  try {
+    const id = req.query.id;
+    const customerData = await pool.query("SELECT * FROM customers WHERE customer_id = $1", [id]);
+    res.send(customerData.rows);
+    console.log(customerData.rows);
+  } catch (err) {
+    console.error(err);
+    res.send(err);
+  }
+})
+
 app.use(express.static("public"));

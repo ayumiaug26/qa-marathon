@@ -45,13 +45,26 @@
           const cell2 = row.insertCell(1);
           const cell3 = row.insertCell(2);
           const cell4 = row.insertCell(3);
+
           cell1.textContent = index + 1;
-          cell2.textContent = customer.company_name;
+
+          cell2.setAttribute('id', 'name');
+          const link = document.createElement('a');
+          link.href = './detail.html?id=' + customer.customer_id;
+          link.textContent = customer.company_name;
+          cell2.appendChild(link);
+
           cell3.textContent = customer.industry;
           cell4.textContent = customer.contact;
+
+          link.addEventListener('click', function (e) {
+            const customer_id = customer.customer_id;
+
+          })
         });
       })
       .catch((error) => console.error(error));
+
   </script>
 
   <!-- BootstrapのJavaScriptと依存関係のリンク -->
