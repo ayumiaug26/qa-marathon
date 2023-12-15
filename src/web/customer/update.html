@@ -63,8 +63,7 @@
             storage.setItem('location', formData.get('location'));
             storage.setItem('id', customerId);
 
-            const url = 'http://localhost/customer/update-confirm.html'
-            window.location.assign(url + '?id=' + customerId);
+            window.location.assign('./update-confirm.html?id=' + customerId);
 
         });
     </script>
