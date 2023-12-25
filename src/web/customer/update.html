@@ -1,22 +1,76 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>案件情報入力</title>
+    <title>顧客情報入力</title>
     <!-- Bootstrap CSSの読み込み -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <!-- ここにHTMLを書く -->
+        <h2 class="mb-4">顧客情報の更新</h2>
+        <form id="update-form">
+            <div class="form-group">
+                <label for="companyName">会社名:</label>
+                <input type="text" class="form-control" id="companyName" name="companyName" required>
+            </div>
+            <div class="form-group">
+                <label for="industry">業種:</label>
+                <input type="text" class="form-control" id="industry" name="industry" required>
+            </div>
+            <div class="form-group">
+                <label for="contact">連絡先:</label>
+                <input type="text" class="form-control" id="contact" name="contact" required>
+            </div>
+            <div class="form-group">
+                <label for="location">所在地:</label>
+                <input type="text" class="form-control" id="location" name="location" required>
+            </div>
+            <button type="submit" id="button" class="btn btn-primary">更新する</button>
+        </form>
     </div>
     <script type="module">
-        <!-- ここにJSを書く -->
+        import config from '../config.js';
+        let customerId;
+
+        const param = new URLSearchParams(window.location.search);
+        console.log(param.toString());
+        fetch(`${config.apiUrl}/customer/:?${param.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data); //データが取得できているか確認
+
+                customerId = data[0].customer_id;
+                document.getElementById('companyName').value = data[0].company_name;
+                document.getElementById('industry').value = data[0].industry;
+                document.getElementById('contact').value = data[0].contact;
+                document.getElementById('location').value = data[0].location;
+
+            }).catch((error) => console.error(error));
+
+        document.getElementById('update-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const storage = sessionStorage;
+            storage.setItem('companyName', formData.get('companyName'));
+            storage.setItem('industry', formData.get('industry'));
+            storage.setItem('contact', formData.get('contact'));
+            storage.setItem('location', formData.get('location'));
+            storage.setItem('id', customerId);
+
+            window.location.assign('./update-confirm.html?id=' + customerId);
+
+        });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

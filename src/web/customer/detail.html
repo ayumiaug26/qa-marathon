@@ -1,0 +1,110 @@
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>detail</title>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Customer Detail</h1>
+        <div>
+            <ul>
+                <li>顧客id</li>
+                <p id="customerId" name="customerId"></p>
+                <li>会社名</li>
+                <p id="companyName" name="companyName"></p>
+                <li>業種</li>
+                <p id="industry" name="industry"></p>
+                <li>所在地</li>
+                <p id="location" name="location"></p>
+                <li>連絡先</li>
+                <p id="contact" name="contact"></p>
+                <li>登録日時</li>
+                <p id="created_date"></p>
+                <li>更新日時</li>
+                <p id="updated_date"></p>
+            </ul>
+        </div>
+        <div>
+            <form id="delete-form">
+                <input type="hidden" id="delete_id" name="id">
+                <button id="delete" type="submit">削除</button>
+            </form>
+        </div>
+        <div>
+            <!-- <form id="update-form"> -->
+            <!-- <input type="hidden"> -->
+            <button id="update" name="update" type="button">更新</button>
+            <!-- </form> -->
+        </div>
+    </div>
+</body>
+<script type="module">
+    import config from "../config.js";
+
+    const param = new URLSearchParams(window.location.search);
+    let customerId;
+    let companyName;
+
+    fetch(`${config.apiUrl}/customer/:?${param.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+
+            console.log(data); //データが取得できているか確認
+
+            document.getElementById('customerId').textContent = data[0].customer_id;
+            customerId = data[0].customer_id;
+            document.getElementById('delete_id').value = customerId;
+            document.getElementById('companyName').textContent = data[0].company_name;
+            document.getElementById('industry').textContent = data[0].industry;
+            document.getElementById('contact').textContent = data[0].contact;
+            document.getElementById('location').textContent = data[0].location;
+            document.getElementById('created_date').textContent = data[0].created_date;
+            document.getElementById('updated_date').textContent = data[0].updated_date;
+
+        }).catch((error) => console.error(error));
+
+    document.getElementById('delete-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        let result = confirm('この顧客を削除します。よろしいですか？');
+        if (result) {
+            fetch(`${config.apiUrl}/customer/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams([...formData])
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('顧客情報を1件削除しました。');
+                        window.location.assign('./list.html');
+                    } else {
+                        alert('処理に失敗しました。');
+                    }
+                })
+                .catch(error => console.error(error));
+
+        } else {
+            alert('キャンセルしました');
+        }
+
+    })
+
+    document.getElementById('update').addEventListener('click', function (e) {
+
+        window.location.assign('./update.html?id=' + customerId);
+
+    })
+
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</html>
